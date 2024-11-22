@@ -18,3 +18,6 @@ hippomenes-rt = { git = "https://github.com/onsdagens/hippomenes-core", branch =
 rtic = { git = "https://github.com/onsdagens/rtic", branch = "mpu", features = [
     "riscv-clic-backend",
 ] }
+layout-derive = { git = "https://github.com/perlindgren/layout-derive" }
+layout-trait = { git = "https://github.com/perlindgren/layout-trait" }
+heapless = "0.7.16"

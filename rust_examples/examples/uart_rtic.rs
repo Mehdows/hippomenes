@@ -6,8 +6,11 @@ use hippomenes_rt as _;
 #[rtic::app(device = hippomenes_core)]
 mod app {
     use core::fmt::Write;
+    use heapless::Vec;
     use hippomenes_core::UART;
+    use layout_trait::GetLayout;
     #[shared]
+    #[derive(Layout)]
     struct Shared {
         dummy: bool,
     }
@@ -25,6 +28,12 @@ mod app {
         write!(uart, "init").ok();
         timer.write(0x100F); //timer interrupt every
                              // 500*2^15 ~ 16M cycles ~0.75s @ 20MHz
+        let shared = Shared { dummy: true };
+        let mut layout: Vec<layout_trait::Layout, 1> = Vec::new();
+        shared.get_layout(&mut layout);
+        hippomenes_core::mpu::Interrupt0Config::Region0Width::set(layout[0].size);
+        hippomenes_core::mpu::Interrupt0Config::Region0Address::set(layout[0].address);
+        hippomenes_core::mpu::Interrupt0Config::Region0Permissions::set(3);
         (Shared { dummy: true }, Local { uart })
     }
 
