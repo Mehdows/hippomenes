@@ -46,3 +46,17 @@ mod app {
 fn p(_: &PanicInfo) -> ! {
     loop {}
 }
+use core::fmt::Write;
+use hippomenes_core::Peripherals;
+#[no_mangle]
+fn _memex() -> ! {
+    let mut p = unsafe { Peripherals::steal() };
+    write!(p.uart, "Memory Exception").ok();
+    // disable interrupts
+    hippomenes_core::mstatus::MIE::clear();
+    // close frame by lowering priority threshold
+    unsafe {
+        hippomenes_core::mintthresh::Bits::write(1);
+    }
+    loop {}
+}
