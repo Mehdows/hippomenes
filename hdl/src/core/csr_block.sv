@@ -48,15 +48,20 @@ csr #(
 );
 CsrAddrT blocked_csr [blocks];
 logic [$clog2(blocks)-1:0] id;
+logic blocked_csr_is_full;
 always_ff @(posedge clk) begin
     if (reset) begin
         blocked_csr <= '{default: '0};
         id <= 0;
+        blocked_csr_is_full <= 0;
     end 
-    if (csr_addr == CsrAddr) begin
+    if (csr_addr == CsrAddr && blocked_csr_is_full == 0) begin
         blocked_csr[id] <= csr_out;
         id += 1;
-    end;
+        if (id == 0) begin
+            blocked_csr_is_full = 1;
+        end
+    end
 end
 
 logic [blocks-1:0] block_vec;
