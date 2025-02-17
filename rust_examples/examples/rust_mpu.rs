@@ -18,9 +18,14 @@ fn main() -> ! {
     hippomenes_core::mpu::MPUConfig::Region0Address::set(0x5000_0000);
     hippomenes_core::mpu::MPUConfig::Region0Width::set(0x64);
 
+    hippomenes_core::mpu::Interrupt1Config::Region0Permissions::set(3);
+    hippomenes_core::mpu::Interrupt1Config::Region0Address::set(0x5000_0000);
+    hippomenes_core::mpu::Interrupt1Config::Region0Width::set(0x3);
+
     hippomenes_core::mpu::Interrupt1Config::Region1Permissions::set(3);
     hippomenes_core::mpu::Interrupt1Config::Region1Address::set(*keystore as usize);
     hippomenes_core::mpu::Interrupt1Config::Region1Width::set(3);
+    
     unsafe {
         interrupt_1::set_priority(1);
         interrupt_1::enable_int();
